@@ -1,0 +1,14 @@
+../Drivers/CMSIS/Include/core_cm4.h:1933:34:__NVIC_SystemReset	1
+../Core/Src/main.c:90:5:main	1
+../Core/Src/main.c:153:6:SystemClock_Config	4
+../Core/Src/main.c:208:6:scan_code	3
+../Core/Src/main.c:225:6:layer0_handler	169
+../Core/Src/main.c:450:6:layer1_handler	97
+../Core/Src/main.c:575:6:fill_led_buffer	12
+../Core/Src/main.c:598:6:set_led_buffer_at_location	5
+../Core/Src/main.c:606:10:calc_led_brightness	2
+../Core/Src/main.c:620:6:HAL_SPI_RxCpltCallback	4
+../Core/Src/main.c:637:6:HAL_SPI_TxCpltCallback	2
+../Core/Src/main.c:642:6:HAL_SPI_ErrorCallback	0
+../Core/Src/main.c:655:6:HAL_TIM_PeriodElapsedCallback	4
+../Core/Src/main.c:680:6:Error_Handler	1
