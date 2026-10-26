@@ -1,0 +1,309 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "adc.h"
+#include "dma.h"
+#include "iwdg.h"
+#include "spi.h"
+#include "tim.h"
+#include "usb_device.h"
+#include "gpio.h"
+
+//#include "usbd_hid.h"
+//#include "usbd_customhid.h"
+#include "custom_keymap.h"
+
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+uint8_t usb_ready = 0;
+uint8_t fn_pressed = 0;
+uint8_t media_pressed = 0;
+uint8_t win_key_enable = 1;
+//uint8_t global_buffer[CUSTOM_HID_EPIN_SIZE] = { 0 };
+
+/* USER CODE END Variables */
+/* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for encoderTask */
+osThreadId_t encoderTaskHandle;
+const osThreadAttr_t encoderTask_attributes = {
+  .name = "encoderTask",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for buttonScanTask */
+osThreadId_t buttonScanTaskHandle;
+const osThreadAttr_t buttonScanTask_attributes = {
+  .name = "buttonScanTask",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
+/* Definitions for ledTask */
+osThreadId_t ledTaskHandle;
+const osThreadAttr_t ledTask_attributes = {
+  .name = "ledTask",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for ledModeChange */
+osThreadId_t ledModeChangeHandle;
+const osThreadAttr_t ledModeChange_attributes = {
+  .name = "ledModeChange",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+void scan_delayus(uint16_t tick);
+/* USER CODE END FunctionPrototypes */
+
+void StartDefaultTask(void *argument);
+void StartencoderTask(void *argument);
+void StartbuttonScanTask(void *argument);
+void StartledTask(void *argument);
+void StartledModeChange(void *argument);
+
+extern void MX_USB_DEVICE_Init(void);
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/**
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
+	HAL_Delay(1000);
+  /* USER CODE END Init */
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of encoderTask */
+  encoderTaskHandle = osThreadNew(StartencoderTask, NULL, &encoderTask_attributes);
+
+  /* creation of buttonScanTask */
+  buttonScanTaskHandle = osThreadNew(StartbuttonScanTask, NULL, &buttonScanTask_attributes);
+
+  /* creation of ledTask */
+  ledTaskHandle = osThreadNew(StartledTask, NULL, &ledTask_attributes);
+
+  /* creation of ledModeChange */
+  ledModeChangeHandle = osThreadNew(StartledModeChange, NULL, &ledModeChange_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+
+}
+
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void *argument)
+{
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
+  /* USER CODE BEGIN StartDefaultTask */
+  //usb_ready = 1;
+  osDelay(750);
+  /* Infinite loop */
+  for(;;)
+  {
+	  //USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, global_buffer, CUSTOM_HID_EPIN_SIZE);
+	  //osDelay(CUSTOM_HID_FS_BINTERVAL);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_StartencoderTask */
+/**
+* @brief Function implementing the encoderTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartencoderTask */
+void StartencoderTask(void *argument)
+{
+  /* USER CODE BEGIN StartencoderTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartencoderTask */
+}
+
+/* USER CODE BEGIN Header_StartbuttonScanTask */
+/**
+* @brief Function implementing the buttonScanTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartbuttonScanTask */
+void StartbuttonScanTask(void *argument)
+{
+  /* USER CODE BEGIN StartbuttonScanTask */
+  /* Infinite loop */
+  for(;;)
+  {
+	uint8_t buffer[] = { 0 };
+	uint8_t count = 0;
+	column_0_set;
+	while(column_15_offset && !column_0_offset);
+	if(count < 1 && column_0_offset && row_0_offset)
+	  buffer[count++] = 0xe9;
+	if(count < 1 && column_0_offset && row_1_offset)
+	  buffer[count++] = 0xea;
+	/*if(count < 1 && column_0_offset && row_2_offset)
+	  buffer[count++] = keymap_1[30];
+	if(count < 1 && column_0_offset && row_3_offset)
+	  buffer[count++] = keymap_1[45];
+	if(column_0_offset && row_4_offset)
+	  buffer[Modify_pos] |= Modify_LShift;
+	if(column_0_offset && row_5_offset)
+	  buffer[Modify_pos] |= Modify_LCtrl;*/
+	column_0_reset;
+	scan_delayus(column_scan_interval);
+
+	column_1_set;
+	while(column_0_offset && !column_1_offset);
+	if(count < 1 && column_1_offset && row_0_offset)
+	  buffer[count++] = 0xe2;
+	/*if(count < 1 && column_1_offset && row_1_offset)
+	  buffer[count++] = keymap_1[16];
+	if(count < 1 && column_1_offset && row_2_offset)
+	  buffer[count++] = keymap_1[31];
+	if(count < 1 && column_1_offset && row_3_offset)
+	  buffer[count++] = keymap_1[46];
+	if(count < 1 && column_1_offset && row_4_offset)
+	  buffer[count++] = keymap_1[60];
+	if(column_1_offset && row_5_offset)
+	  buffer[Modify_pos] |= (win_key_enable) ? Modify_LMeta : 0;*/
+	column_1_reset;
+
+	//memcpy(global_buffer, buffer, 1);
+    osDelay(2);
+  }
+  /* USER CODE END StartbuttonScanTask */
+}
+
+/* USER CODE BEGIN Header_StartledTask */
+/**
+* @brief Function implementing the ledTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartledTask */
+void StartledTask(void *argument)
+{
+  /* USER CODE BEGIN StartledTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartledTask */
+}
+
+/* USER CODE BEGIN Header_StartledModeChange */
+/**
+* @brief Function implementing the ledModeChange thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartledModeChange */
+void StartledModeChange(void *argument)
+{
+  /* USER CODE BEGIN StartledModeChange */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartledModeChange */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+void scan_delayus(uint16_t tick){
+	while(tick--){
+		uint8_t tmp = 72;
+		while(tmp--)
+			__NOP();
+	}
+}
+/* USER CODE END Application */
+
