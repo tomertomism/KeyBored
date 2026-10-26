@@ -1,0 +1,5 @@
+board:
+  name: KeyBored_nrf52840
+  vendor: GitHub_tomertomism
+  socs:
+    - name: nrf52840

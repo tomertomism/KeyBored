@@ -1,47 +1,45 @@
-![](https://github.com/tomertomism/custom-layout-wireless-keyboard/img/1.png)
+# KeyBored in USB/BLE
 
-#KeyBored, KeyBored in DFU, KeyBored in BLE
+I want my keyboard to have a knob at the left-side, so that I can use it with one hand only while I am in gaming. However, most keyboards on the market currently have it on the right side, which is kind of inconvenience.
 
-Left-side Knob is a must for me, cuz i think it is totally not efficient when I use the knob while only left hand is used.
-(This project is still in development and may contain bugs and defects)
+我希望我的鍵盤的旋鈕是在左側，這樣玩遊戲時就能單手操作。但是市面上大多數鍵盤的旋鈕都在右側，這對我來說有點不方便。
 
-## 83-key Keyboard with Left-side knob design and Keychron-like layout.
+## 83-key Keychron-like layout with Left-side knob.
 
-Self-designed keyboard and firmware, using STM32F105RCT6 or L475RCT6 as the main MCU.
- - 1000Hz scan rate (L475), 250Hz (F105)
- - left-side knob design
- - WS2812 addressable LED
+<p align="center"><img src="./img/1.png" width="60%"></p>
 
-### - Controlboard
+### - Control board
 
-This keyboard uses seperate design to minimise my development cost.
+#### --- Portal to [firmware](firmware/v1.0.0/)
 
-| v0              | v1          |
-| ----------------- | ---------------------- |
-| using F105RCT6, no BLE  | using L475RCT6, BLE supported by ESP32-c3  |
+I separate the keyboard into two parts, control board and matrix board, to minimise my cost while iterating the control board.
 
-The USB function development is done, thjis KeyBored is fully functional in USB connection.
+為了在迭代控制板時最大限度地降低成本，我將鍵盤分為控制板和矩陣板兩部分。
 
- - BLE
- using ESP32C3FH4;
- ESP firmware is still under development, fimware upgrade feature will be available in the future.
+And because of separated design, you can use this control board and build your own matrix
 
-### - DFU
+由於採用了分離式設計，您可以使用此控制板建立自己的矩陣。
 
-You can upgrade the main MCU firmware through DFU by using [STM32CubeProg](https://www.st.com/en/development-tools/stm32cubeprog.html).
-(I'm still working on the L475, cuz it doesn't work with F105's code).
 
-```flow
-st=>start: Power On
-cond=>condition: "Enter" button pressed?
-e=>end: Go main firmware
-op=>end: Go DFU
-
-st->cond
-cond(no)->e
-cond(yes)->op
-```
+|     | v0 (deprecated) | v1.0.0 (latest)     |
+| --- | --------------- | ------------------- |
+| MCU | STM32F105RCT6   | NRF52840-QIAA       |
+| USB | ✓ (250Hz)       | ✓  (1000Hz)         |
+| BT  | ✗               | ✓  (100Hz)          |
+| DFU | ✓               | still working...    |
 
 ### - Addressable LED
 
-Only Static and Breathing presented, other effects will add later.
+|Definition        |
+| ---------------- |
+|Sc - single colour|
+|Sk - single key   |
+|Fc - full colour  |
+|Fm - full matrix  |
+
+|                 |       | v0 (deprecated) | v1.0.0 (latest)     |
+| --------------- | ----- | --------------- | ------------------- |
+| Static          | Sc Fm | ✓               | still working...    |
+| Breathing       | Sc Fm | ✓               | still working...    |
+| Flowing Rainbow | Fc Fm | ✗               | ✓                   |
+| Fade Out        | Sc Sk | ✗               | ✓                   |

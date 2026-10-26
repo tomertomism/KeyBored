@@ -1,0 +1,18 @@
+identifier: KeyBored_nrf52840/nrf52840
+name: 16cols x 6 rows keyboards with addressable led support
+vendor: tomertomism
+type: mcu
+arch: arm
+ram: 256
+flash: 1024
+toolchain:
+  - zephyr
+supported: 
+  - adc
+  - usb_device
+  - ble
+  - watchdog
+  - timer
+  - serial
+  - spi
+  - i2c

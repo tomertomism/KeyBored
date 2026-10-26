@@ -1,0 +1,136 @@
+/* Copyright 2026 Nok Hin, Siu
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
+
+&pinctrl {
+	uart0_default: uart0_default {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 1,  7)>,
+				<NRF_PSEL(UART_RX, 1,  5)>;
+		};
+	};
+
+	uart0_sleep: uart0_sleep {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 1,  7)>,
+				<NRF_PSEL(UART_RX, 1,  5)>;
+			low-power-enable;
+		};
+	};
+
+	i2s_default: i2s_default {
+		group1 {
+			psels = <NRF_PSEL(I2S_SCK_M, 1, 11)>,
+				<NRF_PSEL(I2S_SDOUT, 0,  2)>,
+				<NRF_PSEL(I2S_LRCK_M, 1, 12)>;
+		};
+	};
+
+	i2s_sleep: i2s_sleep {
+		group1 {
+			psels = <NRF_PSEL(I2S_SCK_M, 1, 11)>,
+				<NRF_PSEL(I2S_SDOUT, 0,  2)>,
+				<NRF_PSEL(I2S_LRCK_M, 1, 12)>;
+			low-power-enable;
+		};
+	};
+};
+
+/ {
+	hid_dev_0: hid_dev_0 {
+		compatible = "zephyr,hid-device";
+		label = "HID0";
+		protocol-code = "keyboard";
+		in-report-size = <64>;
+		in-polling-period-us = <1000>;
+		out-report-size = <64>;
+		out-polling-period-us = <10000>;
+	};
+
+	row_scan_array: row_scan_array {
+		compatible = "gpio-leds";
+		// row_0  { gpios = <&gpio0  5 GPIO_ACTIVE_LOW>; };
+		// row_1  { gpios = <&gpio0  6 GPIO_ACTIVE_LOW>; };
+		// row_2  { gpios = <&gpio0  7 GPIO_ACTIVE_LOW>; };
+		// row_3  { gpios = <&gpio0  8 GPIO_ACTIVE_LOW>; };
+		// row_4  { gpios = <&gpio0  9 GPIO_ACTIVE_LOW>; };
+		// row_5  { gpios = <&gpio0 10 GPIO_ACTIVE_LOW>; };
+
+		row_0  { gpios = <&gpio1  0 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		row_1  { gpios = <&gpio0 24 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		row_2  { gpios = <&gpio0 22 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		row_3  { gpios = <&gpio0 20 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		row_4  { gpios = <&gpio0 23 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		row_5  { gpios = <&gpio1  1 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+	};
+
+	col_scan_array: col_scan_array {
+		compatible = "gpio-keys";
+		// col_0  { gpios = <&gpio1  0 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_1  { gpios = <&gpio1  1 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_2  { gpios = <&gpio1  2 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_3  { gpios = <&gpio1  3 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_4  { gpios = <&gpio1  4 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_5  { gpios = <&gpio1  5 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_6  { gpios = <&gpio1  6 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_7  { gpios = <&gpio1  7 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_8  { gpios = <&gpio1  8 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_9  { gpios = <&gpio1  9 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_10 { gpios = <&gpio1 10 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_11 { gpios = <&gpio1 11 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_12 { gpios = <&gpio1 12 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_13 { gpios = <&gpio1 13 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_14 { gpios = <&gpio1 14 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+		// col_15 { gpios = <&gpio1 15 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>; };
+
+		col_0  { gpios = <&gpio0  8 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_1  { gpios = <&gpio0 15 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_2  { gpios = <&gpio0 17 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_3  { gpios = <&gpio0 14 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_4  { gpios = <&gpio0 16 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_5  { gpios = <&gpio0 19 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_6  { gpios = <&gpio0 21 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_7  { gpios = <&gpio0  3 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_8  { gpios = <&gpio0 28 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_9  { gpios = <&gpio0 30 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_10 { gpios = <&gpio0 26 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_11 { gpios = <&gpio0 27 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_12 { gpios = <&gpio0  5 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_13 { gpios = <&gpio0  6 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_14 { gpios = <&gpio0  7 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+		col_15 { gpios = <&gpio1  8 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>; };
+
+		// col_0  { gpios = <&gpio0  8 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_1  { gpios = <&gpio0 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_2  { gpios = <&gpio0 17 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_3  { gpios = <&gpio0 14 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_4  { gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_5  { gpios = <&gpio0 19 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_6  { gpios = <&gpio0 21 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_7  { gpios = <&gpio0 23 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_8  { gpios = <&gpio0 20 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_9  { gpios = <&gpio0 22 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_10 { gpios = <&gpio0 24 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_11 { gpios = <&gpio1  0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_12 { gpios = <&gpio1  1 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_13 { gpios = <&gpio0 25 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_14 { gpios = <&gpio1  3 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+		// col_15 { gpios = <&gpio0 29 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>; };
+	};
+
+};
+
+// &uart0 {
+//   pinctrl-0 = <&uart0_alt_default>;
+//   pinctrl-1 = <&uart0_alt_sleep>;
+// };

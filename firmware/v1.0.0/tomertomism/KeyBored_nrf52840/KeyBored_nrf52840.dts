@@ -1,0 +1,125 @@
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include "KeyBored_nrf52840-pinctrl.dtsi"
+#include <zephyr/dt-bindings/led/led.h>
+
+
+/ {
+	model = "16cols x 6 rows keyboards with addressable led support";
+	compatible = "GitHub_tomertomism,KeyBored-nrf52840";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+		zephyr,console = &uart0;
+	};
+
+	// vbatt {
+	// 	compatible = "voltage-divider";
+	// 	io-channels = <&adc 5>;
+	// 	output-ohms = <100000>;
+	// 	full-ohms = <(100000 + 100000)>;
+	// };
+
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(48)>;
+		};
+
+		slot0_partition: partition@c000 {
+			label = "image-0";
+			reg = <0x0000c000 DT_SIZE_K(472)>;
+		};
+
+		slot1_partition: partition@82000 {
+			label = "image-1";
+			reg = <0x00082000 DT_SIZE_K(472)>;
+		};
+
+		storage_partition: partition@f8000 {
+			label = "storage";
+			reg = <0x000f8000 DT_SIZE_K(32)>;
+		};
+	};
+};
+
+// &reg1 {
+// 	regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+// };
+
+zephyr_udc0: &usbd {
+	compatible = "nordic,nrf-usbd";
+	status = "okay";
+};
+
+&uart0 {
+	compatible = "nordic,nrf-uart";
+	current-speed = <115200>;
+	status = "okay";
+	pinctrl-0 = <&uart0_default>;
+	pinctrl-1 = <&uart0_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+&wdt0 {
+	status = "okay";
+};
+
+&adc {
+	status = "okay";
+};
+
+&uicr {
+	gpio-as-nreset;
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+just_a_qdec: &qdec {
+	compatible = "nordic,nrf-qdec";
+	status = "okay";
+	pinctrl-0 = <&qdec_default>;
+	pinctrl-1 = <&qdec_sleep>;
+	pinctrl-names = "default", "sleep";
+	steps = <4>;
+	led-pre = <0>;
+};
+
+&i2s0 {
+	status = "okay";
+	pinctrl-0 = <&i2s_default>;
+	pinctrl-1 = <&i2s_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-i2s";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0>;
+		chain-length = <82>;
+		color-mapping = <LED_COLOR_ID_GREEN>,
+				<LED_COLOR_ID_RED>,
+				<LED_COLOR_ID_BLUE>;
+	};
+};

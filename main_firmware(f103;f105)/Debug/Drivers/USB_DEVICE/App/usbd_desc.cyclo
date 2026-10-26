@@ -1,7 +1,0 @@
-../Drivers/USB_DEVICE/App/usbd_desc.c:246:11:USBD_FS_DeviceDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:264:11:USBD_FS_LangIDStrDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:296:11:USBD_FS_ManufacturerStrDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:277:11:USBD_FS_ProductStrDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:329:11:USBD_FS_ConfigStrDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:348:11:USBD_FS_InterfaceStrDescriptor	1
-../Drivers/USB_DEVICE/App/usbd_desc.c:309:11:USBD_FS_SerialStrDescriptor	14
